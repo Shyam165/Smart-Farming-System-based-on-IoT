@@ -1,0 +1,385 @@
+#include "Arduino.h"
+#include "LED.h"
+#include "DS18B20.h"
+#include "SoilMoisture.h"
+#include "Pump.h"
+#include "DHT.h"
+#include "Switchable.h"
+#define HC744051_PIN_S1 0
+#define HC744051_PIN_S2 2
+#define HC744051_PIN_A  A0
+#define DHT_PIN_DATA  12
+#define LDR_PIN_SIG 0
+#define LEDSTRIPS_PIN_SIG 14
+#define SOILMOISTURE_3V3_PIN_SIG  1
+#define WATERPUMP_PIN_COIL1 4
+#define HC744051_PIN_S0  5
+#define DS18B20WP_PIN_DQ  13
+#include<iostream>
+using namespace std;
+DHT dht(DHT_PIN_DATA);
+DS18B20 ds18b20wp(DS18B20WP_PIN_DQ);
+LED ledStripS(LEDSTRIPS_PIN_SIG);
+SoilMoisture soilMoisture_3v3(SOILMOISTURE_3V3_PIN_SIG);
+Pump waterpump(WATERPUMP_PIN_COIL1);
+const int timeout = 100;       
+char menuOption = 10;
+long time0;
+void setup() 
+{
+    
+    
+    Serial.begin(9600);
+    while (!Serial) ; 
+    Serial.println("start");
+    
+    dht.begin();
+    menuOption = menu();
+}
+
+
+void loop() 
+{
+    
+    
+    if(menuOption == '2')
+    {
+    /
+    }
+    else if(menuOption == '1') {
+    
+    float dhtHumidity = dht.readHumidity();
+    
+    float dhtTempC = dht.readTempC();
+    Serial.print(F("Humidity: ")); Serial.print(dhtHumidity); Serial.print(F(" [%]\t"));
+    Serial.print(F("Temp: ")); Serial.print(dhtTempC); Serial.println(F(" [C]"));
+
+    }
+    else if(menuOption == '4') {
+    
+    float ds18b20wpTempC = ds18b20wp.readTempC();
+    Serial.print(F("Temp: ")); Serial.print(ds18b20wpTempC); Serial.println(F(" [C]"));
+
+    }
+    else if(menuOption == '3')
+    {
+    
+    }
+    else if(menuOption == '6') {
+   
+    for(int i=255 ; i> 0 ; i -= 5)
+    {
+    ledStripS.dim(i);                      
+    delay(15);                               
+    }                                          
+    ledStripS.off();                        
+
+    }
+    else if(menuOption == '7') {
+    int soilMoisture_3v3Val = soilMoisture_3v3.read();
+    Serial.print(F("Val: ")); Serial.println(soilMoisture_3v3Val);
+
+    }
+    else if(menuOption == '5') {
+    waterpump.on(); 
+    delay(1000);       
+    waterpump.off();
+    delay(1000);     
+
+    }
+    
+    if (millis() - time0 > timeout)
+    {
+        menuOption = menu();
+    }
+    
+}
+
+
+
+char menu()
+{
+
+    Serial.println(F("\nWhich component would you like to test?"));
+    Serial.println(F("(7) 74HC4051 - Analog Multiplexer and Demultiplexer"));
+    Serial.println(F("(6) DHT22/11 Humidity and Temperature Sensor"));
+    Serial.println(F("(5) DS18B20 1-Wire Temperature Sensor - Waterproof"));
+    Serial.println(F("(4) LDR (Mini Photocell)"));
+    Serial.println(F("(3) Single Color LED Weatherproof Flexi-Strip 60 LED - (1 m)"));
+    Serial.println(F("(2) Soil Moisture Sensor"));
+    Serial.println(F("(1) Submersible Pool Water Pump"));
+    Serial.println(F("(menu) send anything else or press on board reset button\n"));
+    while (!Serial.available());
+    while (Serial.available()) 
+    {
+        char c = Serial.read();
+        if (isAlphaNumeric(c)) 
+        {   
+            
+            if(c == '7') 
+          Serial.println(F("Now Testing 74HC4051 - Analog Multiplexer and Demultiplexer - note that this component doesn't have a test code"));
+        else if(c == '6') 
+          Serial.println(F("Now Testing DHT22/11 Humidity and Temperature Sensor"));
+        else if(c == '5') 
+          Serial.println(F("Now Testing DS18B20 1-Wire Temperature Sensor - Waterproof"));
+        else if(c == '4') 
+          Serial.println(F("Now Testing LDR (Mini Photocell) - note that this component doesn't have a test code"));
+        else if(c == '3') 
+          Serial.println(F("Now Testing Single Color LED Weatherproof Flexi-Strip 60 LED - (1 m)"));
+        else if(c == '2') 
+          Serial.println(F("Now Testing Soil Moisture Sensor"));
+        else if(c == '1') 
+          Serial.println(F("Now Testing Submersible Pool Water Pump"));
+            else
+            {
+                Serial.println(F("Please Enter the valid Input"));
+                return 0;
+            }
+            time0 = millis();
+            return c;
+        }
+    }
+}
+
+
+DHT dht(DHT_PIN_DATA);
+DS18B20 ds18b20wp(DS18B20WP_PIN_DQ);
+LED ledStripS(LEDSTRIPS_PIN_SIG);
+SoilMoisture soilMoisture_3v3(SOILMOISTURE_3V3_PIN_SIG);
+Pump waterpump(WATERPUMP_PIN_COIL1);
+const int timeout = 100;       
+char menuOption = 10;
+long time0;
+void setup() 
+{
+    
+    
+    Serial.begin(9600);
+    while (!Serial) ; 
+    Serial.println("start");
+    
+    dht.begin();
+    menuOption = menu();
+}
+
+
+void loop() 
+{
+    
+    
+    if(menuOption == '2')
+    {
+    /
+    }
+    else if(menuOption == '1') {
+    
+    float dhtHumidity = dht.readHumidity();
+    
+    float dhtTempC = dht.readTempC();
+    Serial.print(F("Humidity: ")); Serial.print(dhtHumidity); Serial.print(F(" [%]\t"));
+    Serial.print(F("Temp: ")); Serial.print(dhtTempC); Serial.println(F(" [C]"));
+
+    }
+    else if(menuOption == '4') {
+    
+    float ds18b20wpTempC = ds18b20wp.readTempC();
+    Serial.print(F("Temp: ")); Serial.print(ds18b20wpTempC); Serial.println(F(" [C]"));
+
+    }
+    else if(menuOption == '3')
+    {
+    
+    }
+    else if(menuOption == '6') {
+   
+    for(int i=255 ; i> 0 ; i -= 5)
+    {
+    ledStripS.dim(i);                      
+    delay(15);                               
+    }                                          
+    ledStripS.off();                        
+
+    }
+    else if(menuOption == '7') {
+    int soilMoisture_3v3Val = soilMoisture_3v3.read();
+    Serial.print(F("Val: ")); Serial.println(soilMoisture_3v3Val);
+
+    }
+    else if(menuOption == '5') {
+    waterpump.on(); 
+    delay(1000);       
+    waterpump.off();
+    delay(1000);     
+
+    }
+    
+    if (millis() - time0 > timeout)
+    {
+        menuOption = menu();
+    }
+    
+}
+
+
+
+char menu()
+{
+
+    Serial.println(F("\nWhich component would you like to test?"));
+    Serial.println(F("(7) 74HC4051 - Analog Multiplexer and Demultiplexer"));
+    Serial.println(F("(6) DHT22/11 Humidity and Temperature Sensor"));
+    Serial.println(F("(5) DS18B20 1-Wire Temperature Sensor - Waterproof"));
+    Serial.println(F("(4) LDR (Mini Photocell)"));
+    Serial.println(F("(3) Single Color LED Weatherproof Flexi-Strip 60 LED - (1 m)"));
+    Serial.println(F("(2) Soil Moisture Sensor"));
+    Serial.println(F("(1) Submersible Pool Water Pump"));
+    Serial.println(F("(menu) send anything else or press on board reset button\n"));
+    while (!Serial.available());
+    while (Serial.available()) 
+    {
+        char c = Serial.read();
+        if (isAlphaNumeric(c)) 
+        {   
+            
+            if(c == '7') 
+          Serial.println(F("Now Testing 74HC4051 - Analog Multiplexer and Demultiplexer - note that this component doesn't have a test code"));
+        else if(c == '6') 
+          Serial.println(F("Now Testing DHT22/11 Humidity and Temperature Sensor"));
+        else if(c == '5') 
+          Serial.println(F("Now Testing DS18B20 1-Wire Temperature Sensor - Waterproof"));
+        else if(c == '4') 
+          Serial.println(F("Now Testing LDR (Mini Photocell) - note that this component doesn't have a test code"));
+        else if(c == '3') 
+          Serial.println(F("Now Testing Single Color LED Weatherproof Flexi-Strip 60 LED - (1 m)"));
+        else if(c == '2') 
+          Serial.println(F("Now Testing Soil Moisture Sensor"));
+        else if(c == '1') 
+          Serial.println(F("Now Testing Submersible Pool Water Pump"));
+            else
+            {
+                Serial.println(F("Please Enter the valid Input"));
+                return 0;
+            }
+            time0 = millis();
+            return c;
+        }
+    }
+}
+
+
+
+void setup() 
+{
+    
+    
+    Serial.begin(9600);
+    while (!Serial) ; 
+    Serial.println("start");
+    
+    dht.begin();
+    menuOption = menu();
+}
+
+
+void loop() 
+{
+    
+    
+    if(menuOption == '2')
+    {
+    /
+    }
+    else if(menuOption == '1') {
+    
+    float dhtHumidity = dht.readHumidity();
+    
+    float dhtTempC = dht.readTempC();
+    Serial.print(F("Humidity: ")); Serial.print(dhtHumidity); Serial.print(F(" [%]\t"));
+    Serial.print(F("Temp: ")); Serial.print(dhtTempC); Serial.println(F(" [C]"));
+
+    }
+    else if(menuOption == '4') {
+    
+    float ds18b20wpTempC = ds18b20wp.readTempC();
+    Serial.print(F("Temp: ")); Serial.print(ds18b20wpTempC); Serial.println(F(" [C]"));
+
+    }
+    else if(menuOption == '3')
+    {
+    
+    }
+    else if(menuOption == '6') {
+   
+    for(int i=255 ; i> 0 ; i -= 5)
+    {
+    ledStripS.dim(i);                      
+    delay(15);                               
+    }                                          
+    ledStripS.off();                        
+
+    }
+    else if(menuOption == '7') {
+    int soilMoisture_3v3Val = soilMoisture_3v3.read();
+    Serial.print(F("Val: ")); Serial.println(soilMoisture_3v3Val);
+
+    }
+    else if(menuOption == '5') {
+    waterpump.on(); 
+    delay(1000);       
+    waterpump.off();
+    delay(1000);     
+
+    }
+    
+    if (millis() - time0 > timeout)
+    {
+        menuOption = menu();
+    }
+    
+}
+
+
+
+char menu()
+{
+
+    Serial.println(F("\nWhich component would you like to test?"));
+    Serial.println(F("(7) 74HC4051 - Analog Multiplexer and Demultiplexer"));
+    Serial.println(F("(6) DHT22/11 Humidity and Temperature Sensor"));
+    Serial.println(F("(5) DS18B20 1-Wire Temperature Sensor - Waterproof"));
+    Serial.println(F("(4) LDR (Mini Photocell)"));
+    Serial.println(F("(3) Single Color LED Weatherproof Flexi-Strip 60 LED - (1 m)"));
+    Serial.println(F("(2) Soil Moisture Sensor"));
+    Serial.println(F("(1) Submersible Pool Water Pump"));
+    Serial.println(F("(menu) send anything else or press on board reset button\n"));
+    while (!Serial.available());
+    while (Serial.available()) 
+    {
+        char c = Serial.read();
+        if (isAlphaNumeric(c)) 
+        {   
+            
+            if(c == '7') 
+          Serial.println(F("Now Testing 74HC4051 - Analog Multiplexer and Demultiplexer - note that this component doesn't have a test code"));
+        else if(c == '6') 
+          Serial.println(F("Now Testing DHT22/11 Humidity and Temperature Sensor"));
+        else if(c == '5') 
+          Serial.println(F("Now Testing DS18B20 1-Wire Temperature Sensor - Waterproof"));
+        else if(c == '4') 
+          Serial.println(F("Now Testing LDR (Mini Photocell) - note that this component doesn't have a test code"));
+        else if(c == '3') 
+          Serial.println(F("Now Testing Single Color LED Weatherproof Flexi-Strip 60 LED - (1 m)"));
+        else if(c == '2') 
+          Serial.println(F("Now Testing Soil Moisture Sensor"));
+        else if(c == '1') 
+          Serial.println(F("Now Testing Submersible Pool Water Pump"));
+            else
+            {
+                Serial.println(F("Please Enter the valid Input"));
+                return 0;
+            }
+            time0 = millis();
+            return c;
+        }
+    }
+}
